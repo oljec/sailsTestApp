@@ -1,0 +1,18 @@
+<div class="login__container col-sm-8">
+  <div class="row">
+    <div class="col-sm-11 text-center">
+      <% if ( typeof userEmail !== 'undefined' ) {%>
+        <h4><%= userEmail %></h4>
+        <a href="/logout">Log Out</a>
+      <% } else {%>
+        <a href="/login">Log In</a> <br />
+        <a href="/signUp">Sign Up</a>
+      <% } %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-11 text-center">
+      Home page
+    </div>
+  </div>
+</div>
