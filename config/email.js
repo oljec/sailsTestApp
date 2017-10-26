@@ -1,35 +1,28 @@
 module.exports.email = {
-    // service: "Gmail",
-    // auth: {
-    //     user: "oljeck@gmail.com",
-    //     pass: "sinka2007bil",
-    // },
-    // templateDir: "api/emailTemplates",
-    // testMode: false
     transporter: {
         host: 'smtp.gmail.com',
         port: 465,
         secure: true, // use SSL
         auth: {
-            user: 'oljeck@gmail.com',
-            pass: 'sinka2007bil'
+            user: 'oljec.ethereum@gmail.com',
+            pass: 'Morein13mop'
         }
     },
 
-    from: 'oljeck@gmail.com',
+    from: 'oljec.ethereum@gmail.com',
 
 
     // transporter: {
-    //     host: 'mail.service-sv.com',
+    //     host: 'SMTP server',
     //     port: 465,
     //     secure: true, // use SSL
     //     auth: {
-    //         user: 'info@service-sv.com',
-    //         pass: 'Morein13mop'
+    //         user: '***',
+    //         pass: '***'
     //     }
     // },
     //
-    // from: 'info@service-sv.com',
+    // from: 'oljec.ethereum@gmail.com',
     templateDir: "api/emailTemplates",
     testMode: false
 };

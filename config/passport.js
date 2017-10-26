@@ -23,6 +23,9 @@ passport.use(new LocalStrategy({
             if (!user) {
                 return done(null, false, { message: "No user with such email" });
             }
+            if (user.state == 'notVerify') {
+                return done(null, false, { message: "Registration wasn't complete. Please check your email" });
+            }
 
             bcrypt.compare(password, user.password, function (err, res) {
                 if (!res)

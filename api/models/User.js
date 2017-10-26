@@ -24,8 +24,8 @@ module.exports = {
       type: 'string',
       required: true,
       maxLength: 100,
-      enum: ['blocked', 'active'],
-      defaultsTo: 'blocked'
+      enum: ['blocked', 'active', 'notVerify'],
+      defaultsTo: 'notVerify'
     },
     activateLink: {
       type: 'string',
@@ -47,6 +47,7 @@ module.exports = {
           cb(err);
         } else {
           user.password = hash;
+          user.activateLink = bcrypt.hashSync(user.email, salt);
           cb();
         }
       });

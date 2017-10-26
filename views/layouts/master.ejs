@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%=typeof title == 'undefined' ? 'Blocksoft ICO Development Kit' : title%></title>
+        <meta name="description" content="Easy way to get your ICO running">
+        <meta name="author" content="Blocksoft">
+
+        <!-- Viewport mobile tag for sensible mobile support -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!--STYLES-->
+        <link rel="stylesheet" href="/styles/bootstrap.min.css">
+        <link rel="stylesheet" href="/styles/importer.css">
+        <link rel="stylesheet" href="/styles/index.css">
+        <!--STYLES END-->
+    </head>
+
+    <body class="container" data-gr-c-s-loaded="true" style="">
+        <%- body %>
+
+        <!--SCRIPTS-->
+        <script src="/js/dependencies/sails.io.js"></script>
+        <script src="/js/ajquery-3.2.1.min.js"></script>
+        <script src="/js/apopper.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/cabinet.js"></script>
+        <!--SCRIPTS END-->
+    </body>
+</html>

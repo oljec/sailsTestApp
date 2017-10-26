@@ -20,20 +20,39 @@ module.exports = {
 
     store: function(req, res){
         var data = req.body;
+        console.log(data);
 
-        passport.authenticate('local', function(err, user, info) {
-            if ((err) || (!user)) {
-                return res.view('login', {
-                    errorMsg: info.message,
-                    email: data.email
-                });
-            }
-            req.logIn(user, function(err) {
-                if (err) res.send(err);
-                return res.redirect('/');
+        var errors = [];
+        if ( !data.email ) {
+            errors.push("Email field is empty");
+        }
+        if ( !data.password ) {
+            errors.push("Password field is empty");
+        }
+
+        if (errors.length != 0) {
+            res.json(200, {
+                state: 'fail',
+                errorMsg: errors
             });
+        } else {
+            passport.authenticate('local', function (err, user, info) {
+                if ((err) || (!user)) {
+                    return res.json(200, {
+                        state: 'fail',
+                        errorMsg: [info.message]
+                    });
+                }
+                req.logIn(user, function (err) {
+                    if (err) res.send(err);
+                    return res.json(200, {
+                        state: 'done',
+                        email: data.email
+                    });
+                });
 
-        })(req, res);
+            })(req, res);
+        }
     },
 
     logout: function(req, res) {
@@ -49,77 +68,84 @@ module.exports = {
         var data = req.body;
         console.log(data);
 
-        if (data.password === data.passwordConfirm) {
-            var newUser = {
-                email: data.email,
-                password: data.password
-            };
+        var errors = [];
+        if ( !data.email ) {
+            errors.push("Email field is empty");
+        }
+        if ( !data.password ) {
+            errors.push("Password field is empty");
+        }
+        if ( !data.passwordConfirm ) {
+            errors.push("Password confirmation field is empty");
+        }
 
-            User.findOne({email:data.email}).exec(function (err, existUser){
-                if (err) return res.send(500);
-
-                if (typeof existUser !== 'undefined') {
-                    res.view('signUp', {
-                        errorMsg: "User exists with such email",
-                        email: data.email
-                    });
-                } else {
-                    User.create(newUser).exec(function (err, user) {
-                        if (err) return res.send(500);
-
-                        Mailer.sendWelcomeMail();  // <= Here we using
-
-                        // EmailService.sendEmail();
-
-                        res.redirect('/');
-
-                    });
-                }
+        if (errors.length != 0) {
+            res.json(200, {
+                state: 'fail',
+                errorMsg: errors
             });
         } else {
-            res.view('signUp', {
-                errorMsg: "Passwords didn't match",
-                email: data.email
-            });
+            if (data.password === data.passwordConfirm) {
+                User.findOne({email: data.email}).exec(function (err, existUser) {
+                    if (err) return res.send(500);
+
+                    if (typeof existUser !== 'undefined') {
+                        res.json(200, {
+                            state: 'fail',
+                            errorMsg: ["User exists with such email"]
+                        });
+                    } else {
+                        var newUser = {
+                            email: data.email,
+                            password: data.password
+                        };
+
+                        User.create(newUser).exec(function (err, user) {
+                            if (err) return res.send(500);
+
+                            if ((err) || (!user)) {
+                                res.json(200, {
+                                    state: 'fail',
+                                    errorMsg: ["User wasn't created. Please contact us for help."]
+                                });
+                            } else {
+
+                                Mailer.sendVerifMail({
+                                    email: user.email,
+                                    link: '/signUp-finish?token=' + user.activateLink
+                                });
+
+                                res.json(200, {
+                                    state: 'done',
+                                    email: data.email
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.json(200, {
+                    state: 'fail',
+                    errorMsg: ["Passwords didn't match"]
+                });
+            }
         }
     },
 
+    signUpFinish : function(req, res){
+        console.log(req.param('token'));
 
-    showAll: function (req, res){
-        res.redirect('/user');
-    },
+        User.update(
+            {activateLink: req.param('token')},
+            {activateLink:'', state:'active'})
+            .exec(function afterwards(err, updated){
 
-    someTesr: function (req, res){
-        res.view('homepage');
-    },
+            if (err) {
+                // handle error here- e.g. `res.serverError(err);`
+                return;
+            }
 
-    addUser: function (req, res) {
-
-        var data = {
-            name        : req.param('name'),
-            password    : req.param('password')
-        };
-
-        User.create(data).exec(function (err, user) {
-
-            if (err) return res.send(500);
-
-            res.redirect('/user');
-
-        });
-    },
-
-    updateUser: function (req, res) {
-
-        var userId = req.param('id');
-
-        var updatedData = {
-            name        : req.param('name'),
-            password    : req.param('password')
-        };
-
-        User.update(userId, updatedData).exec(function (err) {
-            res.redirect('/user');
+            res.view('signUp-finish');
         });
     }
 };

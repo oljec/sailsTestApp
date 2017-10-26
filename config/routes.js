@@ -41,6 +41,7 @@ module.exports.routes = {
   'post /signUp': 'UserController.create',
 
   '/logout': 'UserController.logout',
+  '/signUp-finish': 'UserController.signUpFinish'
 
   /***************************************************************************
   *                                                                          *

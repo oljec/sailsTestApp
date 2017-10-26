@@ -28,9 +28,9 @@ module.exports.policies = {
 
   '*': true,
 
-  // 'HomeController': {
-  //   '*': 'isAuthenticated'
-  // },
+  'HomeController': {
+    '*': 'isAuthenticated'
+  },
 
 
   /***************************************************************************

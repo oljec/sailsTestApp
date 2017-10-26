@@ -1,20 +1,20 @@
-module.exports.sendWelcomeMail = function() {
+module.exports.sendVerifMail = function(data) {
     sails.hooks.email.send(
         "welcomeEmail",
         {
-            recipientName: "Joe",
-            senderName: "Sue"
+            link: data.link
         },
         {
+            // to: data.email,
             to: "oljeck@gmail.com",
-            subject: "Hi there"
+            subject: "Verification link"
         },
         function(err) {
             if(err) {
                 console.log(err);
             }
             else {
-                console.log("Ited!");
+                console.log("Mail sent!");
             }
         }
     )
